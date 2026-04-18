@@ -2,17 +2,10 @@ using UnityEngine;
 
 public class Game : MonoBehaviour
 {
-    [SerializeField] private Player _player;
-    [SerializeField] private WaveStarter _waveStarter;
-    [SerializeField] private UICaller _uiCaller;
-    [SerializeField] private TimeSwitcher _timeSwitcher;
-
-    private void OnEnable()
-    {
-        _uiCaller.ButtonWasPressed += StartGame;
-        _player.GameOver += OnGameOver;
-        _waveStarter.AllEnemysDead += CompleteGame;
-    }
+    private Player _player;
+    private WaveStarter _waveStarter;
+    private UICaller _uiCaller;
+    private TimeSwitcher _timeSwitcher;
 
     private void OnDisable()
     {
@@ -21,7 +14,29 @@ public class Game : MonoBehaviour
         _waveStarter.AllEnemysDead -= CompleteGame;
     }
 
-    private void Start()
+    public void Initialize(Player player, WaveStarter waveStarter, UICaller uiCaller, TimeSwitcher timeSwitcher)
+    {
+        _player = player;
+        _waveStarter = waveStarter;
+        _uiCaller = uiCaller;
+        _timeSwitcher = timeSwitcher;
+
+        SubscribeToEvents();
+    }
+
+    private void SubscribeToEvents()
+    {
+        if (_uiCaller != null)
+            _uiCaller.ButtonWasPressed += StartGame;
+
+        if (_player != null)
+            _player.GameOver += OnGameOver;
+
+        if (_waveStarter != null)
+            _waveStarter.AllEnemysDead += CompleteGame;
+    }
+
+    public void PrepareGame()
     {
         _uiCaller.CallStartScreen();
     }
