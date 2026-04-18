@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class WaveController : MonoBehaviour
+public class WaveStarter : MonoBehaviour
 {
     [SerializeField] private EnemySpawner _spawner;
     [SerializeField] private List<Enemy> _allEnemy;

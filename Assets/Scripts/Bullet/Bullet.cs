@@ -5,17 +5,20 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private BulletMover _mover;
-    [SerializeField] private int _damage = 20;
+    [SerializeField] private float _damage = 20f;
+    [SerializeField] private UnitCollisionHandler _collisionHandler;
 
     private float _lifeTime = 5f;
     private Coroutine _lifeTimeCoroutine;
 
     public event Action<Bullet> BulletFlewAway;
 
-    public int Damage => _damage;
+    public float Damage => _damage;
 
     private void OnEnable()
     {
+        _collisionHandler.CollisionDetected += SmashBullet;
+
         if (_lifeTimeCoroutine != null)
             StopCoroutine(_lifeTimeCoroutine);
 
@@ -24,6 +27,8 @@ public class Bullet : MonoBehaviour
 
     private void OnDisable()
     {
+        _collisionHandler.CollisionDetected -= SmashBullet;
+
         if (_lifeTimeCoroutine != null)
         {
             StopCoroutine(_lifeTimeCoroutine);
@@ -35,6 +40,8 @@ public class Bullet : MonoBehaviour
     {
         _mover.Move();
     }
+
+    private void SmashBullet() => BulletFlewAway?.Invoke(this);
 
     private IEnumerator StartLifetime()
     {

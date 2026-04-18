@@ -8,8 +8,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private EnemyRotator _rotator;
     [SerializeField] private PlayerDetector _detector;
     [SerializeField] private Attacker _attacker;
-    [SerializeField] private BulletCollisionHandler _collisionHandler;
+    [SerializeField] private WeaponCollisionHandler _collisionHandler;
     [SerializeField] private Health _health;
+    [SerializeField] private EffectHandler _effectHandler;
 
     public event Action<Enemy> Dead;
 
@@ -17,6 +18,7 @@ public class Enemy : MonoBehaviour
     {
         _detector.PlayerDetected += SetTarget;
         _collisionHandler.CollisionDetected += _health.TakeDamage;
+        _collisionHandler.CollisionDetected += _effectHandler.PlayEffect;
         _health.HealthOver += Die;
     }
 
@@ -24,6 +26,7 @@ public class Enemy : MonoBehaviour
     {
         _detector.PlayerDetected -= SetTarget;
         _collisionHandler.CollisionDetected -= _health.TakeDamage;
+        _collisionHandler.CollisionDetected -= _effectHandler.PlayEffect;
         _health.HealthOver -= Die;
     }
 
@@ -31,7 +34,7 @@ public class Enemy : MonoBehaviour
     {
         _animator.SetupSpeed(_mover.Velocity);
 
-        if (_attacker.IsReady)
+        if (_attacker.IsReadyForAttack)
         {
             _attacker.Attack(true);
             _animator.SetupAttack();

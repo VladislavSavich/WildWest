@@ -3,63 +3,46 @@ using UnityEngine;
 public class Game : MonoBehaviour
 {
     [SerializeField] private Player _player;
-    [SerializeField] private WaveController _controller;
-    [SerializeField] private StartScreen _startScreen;
-    [SerializeField] private EndScreen _loseScreen;
-    [SerializeField] private EndScreen _victoryScreen;
+    [SerializeField] private WaveStarter _waveStarter;
+    [SerializeField] private UICaller _uiCaller;
+    [SerializeField] private TimeSwitcher _timeSwitcher;
 
     private void OnEnable()
     {
-        _startScreen.PlayButtonClicked += OnPlayButtonClick;
-        _loseScreen.RestartButtonClicked += OnRestartButtonClick;
-        _victoryScreen.RestartButtonClicked += OnRestartButtonClick;
+        _uiCaller.ButtonWasPressed += StartGame;
         _player.GameOver += OnGameOver;
-        _controller.AllEnemysDead += CompleteGame;
+        _waveStarter.AllEnemysDead += CompleteGame;
     }
 
     private void OnDisable()
     {
-        _startScreen.PlayButtonClicked -= OnPlayButtonClick;
-        _loseScreen.RestartButtonClicked -= OnRestartButtonClick;
-        _victoryScreen.RestartButtonClicked -= OnRestartButtonClick;
+        _uiCaller.ButtonWasPressed -= StartGame;
         _player.GameOver -= OnGameOver;
-        _controller.AllEnemysDead -= CompleteGame;
+        _waveStarter.AllEnemysDead -= CompleteGame;
     }
 
     private void Start()
     {
-        Time.timeScale = 0;
-        _startScreen.Open();
+        _uiCaller.CallStartScreen();
     }
 
     private void OnGameOver()
     {
-        Time.timeScale = 0;
-        _loseScreen.Open();
+        _timeSwitcher.StopTime();
+        _uiCaller.CallLoseScreen();
     }
 
     private void CompleteGame()
     {
-        Time.timeScale = 0;
-        _victoryScreen.Open();
-    }
-
-    private void OnRestartButtonClick()
-    {
-        _loseScreen.Close();
-        _victoryScreen.Close();
-        StartGame();
-    }
-    private void OnPlayButtonClick()
-    {
-        _startScreen.Close();
-        StartGame();
+        _timeSwitcher.StopTime();
+        _uiCaller.CallVictoryScreen();
     }
 
     private void StartGame()
     {
-        Time.timeScale = 1;
+        _uiCaller.CloseAllScreens();
+        _timeSwitcher.StartTime();
         _player.Reset();
-        _controller.Reset();
+        _waveStarter.Reset();
     }
 }

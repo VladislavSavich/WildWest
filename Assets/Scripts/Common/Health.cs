@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int _hitPoints = 100;
-    [SerializeField] private int _maxHitPoints = 100;
+    [SerializeField] private float _hitPoints = 100f;
+    [SerializeField] private float _maxHitPoints = 100f;
 
-    private int _minimumValue = 0;
+    private float _minimumValue = 0f;
 
-    public event Action<int, int> Changed;
+    public event Action<float, float> Changed;
     public event Action HealthOver;
 
-    public int HitCount => _hitPoints;
+    public float HitCount => _hitPoints;
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (damage > _minimumValue)
         {

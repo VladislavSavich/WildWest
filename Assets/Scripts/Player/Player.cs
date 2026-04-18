@@ -8,21 +8,24 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerMover _mover;
     [SerializeField] private PlayerRotater _rotater;
     [SerializeField] private Attacker _attacker;
-    [SerializeField] private BulletCollisionHandler _collisionHandler;
+    [SerializeField] private WeaponCollisionHandler _collisionHandler;
     [SerializeField] private Health _health;
     [SerializeField] private WeaponSwitcher _switcher;
+    [SerializeField] private EffectHandler _effectHandler;
 
     public event Action GameOver;
 
     private void OnEnable()
     {
         _collisionHandler.CollisionDetected += _health.TakeDamage;
+        _collisionHandler.CollisionDetected += _effectHandler.PlayEffect;
         _health.HealthOver += PassAway;
     }
 
     private void OnDisable()
     {
         _collisionHandler.CollisionDetected -= _health.TakeDamage;
+        _collisionHandler.CollisionDetected -= _effectHandler.PlayEffect;
         _health.HealthOver -= PassAway;
     }
 
@@ -37,7 +40,7 @@ public class Player : MonoBehaviour
 
         if (_inputReader.GetIsAttack())
         {
-            if (_attacker.IsReady)
+            if (_attacker.IsReadyForAttack)
             {
                 if (!_switcher.IsGun)
                     _animator.SetupSecondWeapon();

@@ -4,23 +4,23 @@ using UnityEngine;
 public class Attacker : MonoBehaviour
 {
     [SerializeField] private Shooter _shooter;
-    [SerializeField] private Transform _aimTransform;
-    [SerializeField] private float _attackCooldown = 0.5f;
+    [SerializeField] private Transform _aim;
+    [SerializeField] private float _cooldownValue = 0.5f;
 
     private bool _canAttack = true;
-    private Coroutine _atackingCoroutine;
+    private Coroutine _attackingCoroutine;
 
-    public bool IsReady => _canAttack;
+    public bool IsReadyForAttack => _canAttack;
 
     private void OnEnable()
     {
-        _atackingCoroutine = StartCoroutine(AttackCooldown());
+        _attackingCoroutine = StartCoroutine(AttackCooldown());
     }
 
     private void OnDisable()
     {
-        if (_atackingCoroutine != null)
-            StopCoroutine(_atackingCoroutine);
+        if (_attackingCoroutine != null)
+            StopCoroutine(_attackingCoroutine);
     }
 
     public void Attack(bool IsFirstWeapon)
@@ -28,17 +28,17 @@ public class Attacker : MonoBehaviour
         if (_canAttack)
         {
             if (IsFirstWeapon)
-                _shooter.Shoot(_aimTransform.forward);
+                _shooter.Shoot(_aim.forward);
 
-            if (_atackingCoroutine != null)
-                _atackingCoroutine = StartCoroutine(AttackCooldown());
+            if (_attackingCoroutine != null)
+                _attackingCoroutine = StartCoroutine(AttackCooldown());
         }
     }
 
     private IEnumerator AttackCooldown()
     {
         _canAttack = false;
-        yield return new WaitForSeconds(_attackCooldown);
+        yield return new WaitForSeconds(_cooldownValue);
         _canAttack = true;
     }
 }

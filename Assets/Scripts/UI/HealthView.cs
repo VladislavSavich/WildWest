@@ -21,9 +21,9 @@ public class HealthView : MonoBehaviour
         Health.Changed -= UpdateView;
     }
 
-    private void UpdateView(int hitPoints, int maxhitPoints)
+    private void UpdateView(float hitPoints, float maxhitPoints)
     {
-        _targetFillAmount = (float)hitPoints / maxhitPoints;
+        _targetFillAmount = hitPoints / maxhitPoints;
 
         if (_smoothSlider != null)
         {
